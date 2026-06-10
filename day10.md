@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+Day 10: Personal Portfolio Website
 <title>Unnati Bhadauriya | Portfolio</title>
 <meta name="description" content="Portfolio of Unnati Bhadauriya - Python Enthusiast and Aspiring Developer">
 <script src="https://cdn.tailwindcss.com"></script>
