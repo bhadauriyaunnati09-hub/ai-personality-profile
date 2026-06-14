@@ -1,6 +1,6 @@
 # Day 14 - AI Job Red Flag Detector 🚩
 
-**Challenge:** AcademyBind 30-Day AI Challenge  
+**Challenge:** AcademyBind 60-Day AI Challenge  
 **Day:** 14  
 **Topic:** AI Job Red Flag Detector — Analyze opportunities before investing your time  
 **Difficulty:** Beginner  
