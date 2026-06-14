@@ -78,13 +78,7 @@ An interactive **AI Job Red Flag Detector** that:
 - **Styling:** Inline CSS with dark theme
 - **Platform:** AcademyBind / Claude.ai
 
----
 
-## 📸 Screenshots
-
-> *(Add screenshots of your generated report here)*
-
----
 
 ## 🔗 Resources
 
