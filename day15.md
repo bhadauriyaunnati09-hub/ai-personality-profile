@@ -181,6 +181,6 @@ Top 3 Concerns:
 | AcademyBind | Learning platform / Challenge structure |
 | GitHub | Documentation and submission |
 
-*Completed as part of AcademyBind 30-Day AI Challenge*
+*Completed as part of AcademyBind 60-Day AI Challenge*
 *Date: June 15, 2026*
 *By: Unnati Bhadauriya | B.Tech CSE | Jiwaji University*
