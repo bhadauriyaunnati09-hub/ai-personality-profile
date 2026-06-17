@@ -1,0 +1,44 @@
+# Day 17/60 – AI Vehicle Cost & Fuel Analysis Dashboard
+
+## Overview
+Built an AI-powered Vehicle Cost & Fuel Analysis Dashboard that transforms vehicle data into meaningful insights through interactive visualizations and analytics.
+
+## Features
+- Cost per KM Analysis
+- Fuel Cost Comparison
+- Maintenance Cost Tracking
+- CO₂ Emission Analysis
+- Age-Based Vehicle Insights
+- E85 Economics & Break-Even Analysis
+- KPI Cards
+- Responsive Dashboard Design
+
+## Technologies Used
+- HTML
+- CSS
+- JavaScript
+- SVG Charts
+- Data Analytics
+
+## Key Learnings
+- Data visualization techniques
+- KPI dashboard design
+- Fuel efficiency analysis
+- Cost optimization concepts
+- Interactive dashboard development
+
+## Project Outcome
+Successfully created a dashboard capable of analyzing vehicle operating costs, fuel efficiency, maintenance expenses, and environmental impact metrics.
+
+## Repository Structure
+
+Day17/
+├── index.html
+├── screenshots/
+│   ├── dashboard1.png
+│   ├── dashboard2.png
+│   └── dashboard3.png
+└── day17.md
+
+## Conclusion
+This project improved my understanding of data analytics, dashboard development, and visualization techniques for real-world vehicle performance analysis.
