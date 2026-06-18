@@ -137,16 +137,6 @@ The generated HTML dashboard includes:
 - 🔁 Conflicts section
 - 📎 Additional Notes
 
----
-
-## 📁 Files in This Folder
-
-| File | Description |
-|------|-------------|
-| `day18.md` | This documentation file |
-| `screenshot_skill_config.png` | Screenshot of the created Custom Skill |
-| `screenshot_dashboard_output.png` | Screenshot of generated HTML dashboard |
-
 ## 🏷️ Tags
 
 `#AcademyBind` `#60DayAIChallenge` `#Day18` `#ClaudeSkills` `#CustomSkill` `#BrainDump` `#AIProductivity` `#Claude` `#Anthropic`
