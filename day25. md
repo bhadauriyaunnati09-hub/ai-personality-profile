@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Shark Tank Simulator</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#050505;
+color:white;
+}
+
+header{
+text-align:center;
+padding:30px;
+}
+
+h1{
+color:#00E5FF;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:#111;
+padding:20px;
+margin:15px 0;
+border-radius:15px;
+box-shadow:0 0 15px rgba(0,229,255,.15);
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#222;
+border:none;
+border-radius:8px;
+color:white;
+}
+
+button{
+background:#00E5FF;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+margin-top:15px;
+}
+
+.sharks{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+}
+
+.shark{
+padding:15px;
+border-radius:12px;
+background:#181818;
+}
+
+.score{
+font-size:40px;
+color:#00FF88;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+td,th{
+padding:10px;
+border:1px solid #333;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🦈 AI Shark Tank Simulator</h1>
+<p>Pitch Your Startup To AI Investors</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Startup Pitch</h2>
+
+<input id="name" placeholder="Startup Name">
+<textarea id="problem" placeholder="Problem Statement"></textarea>
+<textarea id="solution" placeholder="Solution"></textarea>
+<input id="revenue" placeholder="Revenue Model">
+<input id="audience" placeholder="Target Audience">
+<input id="funding" placeholder="Funding Ask">
+
+<button onclick="startPitch()">PITCH TO SHARKS</button>
+</div>
+
+<div id="pitchArea"></div>
+
+<div class="card">
+<h2>AI Sharks</h2>
+
+<div class="sharks">
+
+<div class="shark">
+<h3>🦈 Venture Capitalist</h3>
+<p>Market Size & Growth</p>
+</div>
+
+<div class="shark">
+<h3>🦈 Founder</h3>
+<p>Execution Focus</p>
+</div>
+
+<div class="shark">
+<h3>🦈 Customer</h3>
+<p>User Value</p>
+</div>
+
+<div class="shark">
+<h3>🦈 Angel Investor</h3>
+<p>Profitability</p>
+</div>
+
+</div>
+</div>
+
+<div id="results"></div>
+
+<div class="card">
+<h2>Leaderboard</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Score</th>
+<th>Decision</th>
+</tr>
+</thead>
+<tbody id="leaderboard"></tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+
+function startPitch(){
+
+let name=document.getElementById("name").value;
+
+let score=Math.floor(Math.random()*41)+60;
+
+let decision="Reject";
+
+if(score>=90) decision="Invest";
+else if(score>=75) decision="Come Back Later";
+else if(score>=60) decision="Acquire";
+
+document.getElementById("pitchArea").innerHTML=`
+
+<div class="card">
+<h2>${name}</h2>
+<p><b>Problem:</b> ${problem.value}</p>
+<p><b>Solution:</b> ${solution.value}</p>
+<p><b>Revenue:</b> ${revenue.value}</p>
+<p><b>Audience:</b> ${audience.value}</p>
+<p><b>Funding Ask:</b> ${funding.value}</p>
+</div>
+
+`;
+
+document.getElementById("results").innerHTML=`
+
+<div class="card">
+<h2>Investment Result</h2>
+
+<div class="score">${score}/100</div>
+
+<h3>${decision}</h3>
+
+<p>Valuation: $${(score*50000).toLocaleString()}</p>
+
+<p>Funding Offer:
+$${(score*5000).toLocaleString()}</p>
+
+<button onclick="shareResult('${name}',${score},'${decision}')">
+Share Result
+</button>
+
+</div>
+
+`;
+
+saveLeaderboard(name,score,decision);
+
+}
+
+function saveLeaderboard(name,score,decision){
+
+let data=
+JSON.parse(localStorage.getItem("sharks"))||[];
+
+data.push({
+name,
+score,
+decision
+});
+
+data.sort((a,b)=>b.score-a.score);
+
+data=data.slice(0,10);
+
+localStorage.setItem(
+"sharks",
+JSON.stringify(data)
+);
+
+loadLeaderboard();
+}
+
+function loadLeaderboard(){
+
+let data=
+JSON.parse(localStorage.getItem("sharks"))||[];
+
+let html="";
+
+data.forEach(x=>{
+html+=`
+<tr>
+<td>${x.name}</td>
+<td>${x.score}</td>
+<td>${x.decision}</td>
+</tr>
+`;
+});
+
+document.getElementById("leaderboard").innerHTML=html;
+}
+
+function shareResult(name,score,decision){
+
+let text=
+`${name} scored ${score}/100 in AI Shark Tank Simulator. Decision: ${decision}`;
+
+if(navigator.share){
+navigator.share({
+title:"AI Shark Tank",
+text:text
+});
+}else{
+navigator.clipboard.writeText(text);
+alert("Copied to clipboard");
+}
+
+}
+
+loadLeaderboard();
+
+</script>
+
+</body>
+</html>
