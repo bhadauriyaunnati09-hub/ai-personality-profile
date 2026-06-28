@@ -2,8 +2,7 @@
 
 ## Overview
 An interactive, single-file healthcare simulation that puts the user in the role of a **Hospital Admission Coordinator**. The tool walks through a real-world inpatient admission workup — Prior Authorization, insurance verification, bed assignment, documentation, consent, and physician orders — and computes a live **Admission Readiness Score** based on weighted completion of each task.
-
-🔗 Live file: `day28-hospital-admission-readiness-simulator.html`
+`
 
 ## Tech Stack
 - HTML5
