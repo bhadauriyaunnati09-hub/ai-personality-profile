@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation Lifeline: Supply Chain Crisis Lab</title>
+    <!-- React, ReactDOM, and Babel CDNs -->
+    <script src="https://unpkg.com" crossorigin></script>
+    <script src="https://unpkg.com" crossorigin></script>
+    <script src="https://unpkg.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-accent: #334155;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #root {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Common Styling utilities */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: #0f172a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            background-color: var(--bg-accent);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-accent);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .badge-danger { background-color: rgba(248, 113, 113, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .badge-warning { background-color: rgba(251, 191, 36, 0.2); color: var(--warning); border: 1px solid var(--warning); }
+        .badge-success { background-color: rgba(52, 211, 153, 0.2); color: var(--success); border: 1px solid var(--success); }
+
+        /* Progress Bar */
+        .metric-container {
+            margin-bottom: 16px;
+        }
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .progress-bar-bg {
+            background-color: var(--bg-accent);
+            border-radius: 9999px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease-out-in;
+        }
+
+        /* Header Timeline */
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--bg-accent);
+            padding-bottom: 10px;
+            overflow-x: auto;
+        }
+        .step-node {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+            padding-right: 15px;
+        }
+        .step-node.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .why-matter {
+            background-color: rgba(56, 189, 248, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .selectable-card {
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .selectable-card.selected {
+            border-color: var(--primary);
+            background-color: rgba(56, 189, 248, 0.05);
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 12px;
+        }
+        p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- STATIC RESOURCE GENERATORS ---
+        const INDUSTRIES = ["High-Tech Electronics", "Pharmaceuticals", "Automotive EV", "Global Fashion Retail", "Renewable Energy Systems"];
+        const COUNTRIES = ["Germany", "Japan", "USA", "South Korea", "Vietnam", "India", "Mexico", "Taiwan"];
+        
+        const CRISES = [
+            { id: 'fire', name: "Lithium-Ion Battery Factory Fire", impact: "High", desc: "Your primary gigafactory in East Asia suffered severe damage due to an electrical fire. Production is halted entirely for at least two weeks.", severity: 85 },
+            { id: 'bankruptcy', name: "Tier-1 Semiconductor Supplier Bankruptcy", impact: "Critical", desc: "Your main supplier of microcontrollers unexpectedly declared insolvency, stopping shipments immediately without backup inventory.", severity: 90 },
+            { id: 'strike', name: "West Coast Mega-Port Labor Strike", impact: "Medium", desc: "Dockworkers have locked down critical shipping hubs. 40% of your imported components are trapped on container ships anchored offshore.", severity: 65 },
+            { id: 'cyber', name: "Ransomware Attack on ERP Logistics Networks", impact: "Critical", desc: "Hackers locked your inventory routing tracking software. You are completely blind to where your components are globally.", severity: 80 },
+            { id: 'flood', name: "Monsoon Flooding in Manufacturing Hub", impact: "High", desc: "Torrential rains flooded industrial parks housing your sub-assembly partners, knocking out power and transport networks.", severity: 75 }
+        ];
+
+        const WAR_ROOM_ACTIONS = [
+            { id: 1, title: "Air-Freight Emergency Backlog", desc: "Bypass blocked shipping ports by booking charter cargo planes immediately.", cost: +25, inv: -10, profit: -20, speed: +30, sat: +15, logic: "Fast, but incredibly costly for profit margins." },
+            { id: 2, title: "Activate Local Secondary Supplier", desc: "Onboard a pre-vetted nearshore backup factory ready to manufacture parts.", cost: +15, inv: +20, profit: -10, speed: -5, sat: +10, logic: "Stabilizes inventory securely but adds operational cost." },
+            { id: 3, title: "Implement Dynamic SKU Rationalization", desc: "Freeze non-essential custom builds; focus 100% assembly line on high-margin core products.", cost: -10, inv: -15, profit: +15, speed: +15, sat: -10, logic: "Saves cash and boosts delivery speed, but reduces customer choices." },
+            { id: 4, title: "Offer Premium Delay Incentives", desc: "Proactively credit client accounts with 15% discount vouchers for delayed shipments.", cost: +10, inv: 0, profit: -15, speed: 0, sat: +25, logic: "Directly safeguards customer goodwill at a fixed financial cost." },
+            { id: 5, title: "Deploy Internal Maintenance Taskforce", desc: "Fly engineering teams directly to affected infrastructure sites to assist restoration.", cost: +12, inv: +5, profit: -5, speed: +10, sat: +5, logic: "A balanced, collaborative approach to speed up site recovery." },
+            { id: 6, title: "Drawdown Buffer Safety Stocks", desc: "Deplete national emergency warehouses to zero until the market stabilizes.", cost: -15, inv: -40, profit: +10, speed: 0, sat: -5, logic: "Saves money now but leaves the system extremely vulnerable to next week's threats." }
+        ];
+
+        const NEGOTIATION_ROUNDS = [
+            {
+                round: 1,
+                context: "The supplier demands a 20% immediate upfront price increase to accelerate production schedules under current duress. How do you respond?",
+                options: [
+                    { text: "Accept fully; speed and raw material availability are our absolute top priorities.", trust: +20, price: +20, leadTime: -15 },
