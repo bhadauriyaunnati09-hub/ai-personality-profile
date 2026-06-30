@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Builder</title>
+    <!-- React, ReactDOM, and Babel CDNs -->
+    <script src="https://unpkg.com" crossorigin></script>
+    <script src="https://unpkg.com" crossorigin></script>
+    <script src="https://unpkg.com"></script>
+    <style>
+        :root {
+            --bg-main: #0B0F19;
+            --bg-card: #161B26;
+            --bg-hover: #222938;
+            --text-primary: #F3F4F6;
+            --text-secondary: #9CA3AF;
+            --accent: #3B82F6;
+            --accent-success: #10B981;
+            --accent-warning: #F59E0B;
+            --accent-danger: #EF4444;
+            --border: #2D3748;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Layout Utilities */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- CONSTANTS & SIMULATION DATA ---
+        const INDUSTRIES = [
+            { name: "Smartphone Manufacturing", product: "Next-Gen Quantum Phones", desc: "High-value, rapid obsolescence electronics needing fast precision logistics." },
+            { name: "Organic Cosmetics", product: "Eco-Pure Skincare Line", desc: "Perishable items requiring cold/clean shipping with high brand ethics." },
+            { name: "Electric Vehicles", product: "Volt-X Urban Compact Cars", desc: "Heavy components, complex heavy manufacturing, highly critical battery assembly." },
+            { name: "Fast Fashion Apparel", product: "Trend-Now Streetwear Collection", desc: "Extremely volatile demand cycles needing ultra-fast market response." }
+        ];
+
+        const COUNTRIES = [
+            { region: "North America (USA/Canada)", baseCost: 130, baseSpeed: 90, baseRisk: 20, baseSust: 75, desc: "High costs, strict eco-regulations, very fast local distribution networks." },
+            { region: "East Asia (Coastal Hub)", baseCost: 75, baseSpeed: 65, baseRisk: 35, baseSust: 50, desc: "Massive manufacturing capacity, low production costs, massive global maritime links." },
+            { region: "Eastern Europe", baseCost: 95, baseSpeed: 75, baseRisk: 40, baseSust: 60, desc: "Balanced cost tier, strong overland trucking corridors into high-demand zones." },
+            { region: "Latin America Hub", baseCost: 80, baseSpeed: 60, baseRisk: 45, baseSust: 65, desc: "Developing manufacturing corridor, low labor overheads, rising infrastructure development." }
+        ];
+
+        const DEMAND_LEVELS = [
+            { level: "Hyper-Volatile Spikes", multiplier: 1.4, desc: "Wildly unpredictable buyer waves triggered heavily by social trends." },
+            { level: "Steady & Predictable Growth", multiplier: 1.0, desc: "Consistent day-to-day repeat ordering patterns with low seasonal variance." },
+            { level: "Cyclical Seasonal Waves", multiplier: 1.2, desc: "Massive annual spikes during holiday cycles followed by quiet lulls." }
+        ];
+
+        const STAGES = {
+            WELCOME: 0,
+            COMPANY_GEN: 1,
+            SUPPLIERS: 2,
+            FACTORY: 3,
+            WAREHOUSE: 4,
+            TRANSPORT: 5,
+            INVENTORY: 6,
+            DASHBOARD: 7
+        };
+
+        const DECISION_DATA = {
+            SUPPLIERS: {
+                title: "Supplier Base Strategy",
+                concept: "Suppliers provide the raw ingredients, materials, or parts needed to make your final product.",
+                importance: "Choosing only one supplier gives you bulk discounts but creates an immense point of failure if they go bankrupt or suffer a disaster. Multiple suppliers protect your operations but heavily complicate management and drive up operational setup costs.",
+                options: [
+                    {
+                        id: "single",
+                        name: "Single Exclusive Strategic Supplier",
+                        desc: "Put all eggs in one basket. Maximize relational leverage and rock-bottom volume purchasing prices.",
+                        impact: { cost: -15, speed: +10, risk: +35, satisfaction: 0, sustainability: +5 },
+                        tradeoff: "Cheaper and fast due to simple communication, but a single fire at their plant completely stops your entire company."
+                    },
+                    {
+                        id: "multiple",
+                        name: "Multi-Sourced Redundant Supplier Network",
+                        desc: "Spread orders across 3 distinct global vendors to safeguard input streams.",
+                        impact: { cost: +20, speed: -5, risk: -30, satisfaction: +5, sustainability: -5 },
+                        tradeoff: "Highly resilient to disasters, but administrative coordination overhead is high and volume discounts disappear."
+                    }
+                ]
+            },
+            FACTORY: {
+                title: "Manufacturing Location Selection",
+                concept: "Your factory is where physical components are assembled. Its geographical location sets your baseline labor costs and structural emissions footprint.",
+                importance: "Offshoring to distant low-cost nations slashes unit manufacturing costs but introduces massive transit delays to your main markets. Reshoring close to customers eliminates transit lag but commands premium local labor and facility rates.",
+                options: [
+                    {
+                        id: "offshore",
+                        name: "Offshore Production Hub (Low-Cost Global Zone)",
+                        desc: "Locate deep within a high-volume manufacturing corridor with massive labor scale.",
+                        impact: { cost: -25, speed: -20, risk: +20, satisfaction: -5, sustainability: -15 },
+                        tradeoff: "Slashes production costs drastically, but adds weeks of transit time and increases intellectual property theft risks."
+                    },
+                    {
+                        id: "nearshore",
+                        name: "Nearshore/Onshore Regional Facility",
+                        desc: "Position manufacturing directly inside or right adjacent to your primary consumer borders.",
+                        impact: { cost: +25, speed: +25, risk: -20, satisfaction: +15, sustainability: +20 },
+                        tradeoff: "Premium domestic operational expenses, but permits ultra-rapid response times to customer market changes and cuts carbon footprints."
+                    }
+                ]
+            },
+            WAREHOUSE: {
+                title: "Distribution & Warehouse Footprint",
+                concept: "Warehouses hold products securely until customers place orders.",
+                importance: "A single centralized megacenter reduces building rent and keeps global inventory management ultra-simple, but increases shipping legs. Decentralized micro-hubs place physical inventory right next to major urban centers for instant fulfillment, but explode your fixed leasing overhead.",
+                options: [
+                    {
+                        id: "centralized",
+                        name: "Single Mega-Centralized Distribution Center",
+                        desc: "Consolidate all global inventory under one giant, automated roof.",
+                        impact: { cost: -15, speed: -10, risk: +15, satisfaction: -5, sustainability: 0 },
+                        tradeoff: "Saves massive amounts on facility rentals, but creates long shipping routes to distant clients and creates a single target for strikes."
+                    },
+                    {
+                        id: "decentralized",
+                        name: "Decentralized Localized Micro-Hub Strategy",
+                        desc: "Deploy dozens of smaller regional stock rooms directly next to core metropolitan centers.",
+                        impact: { cost: +30, speed: +25, risk: -15, satisfaction: +20, sustainability: -5 },
+                        tradeoff: "Enables blazing-fast localized parcel delivery speeds, but ties up massive capital in duplicate real estate leases."
+                    }
+                ]
+            },
+            TRANSPORT: {
+                title: "Primary Freight Transportation Logistics",
+                concept: "Transportation methods are the physical veins carrying goods from production plants out to points of sale.",
