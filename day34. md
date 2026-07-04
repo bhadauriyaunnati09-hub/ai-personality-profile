@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Detective Agency</title>
+    <!-- React, ReactDOM, and Babel CDNs -->
+    <script src="https://unpkg.com" crossorigin></script>
+    <script src="https://unpkg.com" crossorigin></script>
+    <script src="https://unpkg.com"></script>
+    <!-- Google Fonts for retro/noir detective feel -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Special+Elite&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Theme CSS variables - will be dynamically changed via React */
+            --bg-dark: #0f1015;
+            --cork-bg: #1c1510;
+            --primary: #ea580c; /* Default Claude Orange */
+            --primary-glow: rgba(234, 88, 12, 0.3);
+            --paper-bg: #f4ebd0;
+            --paper-text: #2b251f;
+            --accent-neon: #ff3e3e;
+            --folder-bg: #cca462;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #e2e8f0;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #1a1c24 0%, #0f1015 100%);
+            min-height: 100vh;
+        }
+
+        /* Typewriter font overrides */
+        .typewriter {
+            font-family: 'Courier Prime', monospace;
+        }
+        
+        .detective-title {
+            font-family: 'Special Elite', cursive;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1015;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d313f;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Corkboard Texture */
+        .corkboard {
+            background-color: var(--cork-bg);
+            background-image: 
+                radial-gradient(rgba(0,0,0,0.5) 15%, transparent 16%),
+                radial-gradient(rgba(0,0,0,0.5) 15%, transparent 16%),
+                rgba(40,25,15,0.1);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            border: 16px solid #2b1a0f;
+            border-image: linear-gradient(to bottom, #422817, #1f120a) 16;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5);
+            min-height: 70vh;
+            border-radius: 8px;
+            position: relative;
+            padding: 24px;
+        }
+
+        /* Sticky Notes & Papers */
+        .sticky-note {
+            background: #fef08a;
+            color: #1e293b;
+            font-family: 'Courier Prime', monospace;
+            box-shadow: 2px 5px 15px rgba(0,0,0,0.3);
+            transform: rotate(-1 deg);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .sticky-note::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: #ef4444; /* Push pin */
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .case-paper {
+            background: var(--paper-bg);
+            color: var(--paper-text);
+            font-family: 'Courier Prime', monospace;
+            box-shadow: 5px 10px 25px rgba(0,0,0,0.5);
+            border-left: 5px solid #d97706;
+        }
+
+        /* Glow effects */
+        .glow-border {
+            box-shadow: 0 0 15px var(--primary-glow);
+            border: 1px solid var(--primary);
+        }
+
+        /* Animation utilities */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse-glow {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px var(--primary-glow); }
+            50% { box-shadow: 0 0 20px var(--primary-glow); border-color: var(--primary); }
+            100% { box-shadow: 0 0 5px var(--primary-glow); }
+        }
+
+        /* Draggable Styles */
+        .evidence-card {
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .evidence-card:active {
+            cursor: grabbing;
+            transform: scale(1.02) rotate(1deg);
+        }
+
+        .drop-zone {
+            border: 2px dashed #4b5563;
+            transition: all 0.3s ease;
+        }
+        .drop-zone.active {
+            border-color: var(--primary);
+            background: rgba(234, 88, 12, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Theme Presets Data
+        const THEMES = {
+            claude: { primary: '#ea580c', glow: 'rgba(234, 88, 12, 0.3)', bg: '#1c1510', name: 'Claude Orange' },
+            noir: { primary: '#94a3b8', glow: 'rgba(148, 163, 184, 0.3)', bg: '#111111', name: 'Classic Noir' },
+            neon: { primary: '#06b6d4', glow: 'rgba(6, 182, 212, 0.3)', bg: '#0b131a', name: 'Cyber Detective' },
+            toxic: { primary: '#22c55e', glow: 'rgba(34, 197, 94, 0.3)', bg: '#0a140d', name: 'Toxic Investigation' }
+        };
+
+        // 10 Comprehensive Fictional Marketing Cases
+        const MARKETING_CASES = [
+            {
+                id: 1,
+                companyName: "SnoozePods Inc.",
+                industry: "Consumer Electronics / Wellness",
+                campaignObjective: "Launch premium high-tech soundproof sleeping pods to urban professionals.",
+                targetAudience: "Stressed corporate workers, high earners aged 25-45 living in tier-1 cities.",
+                marketingChannels: "TikTok Influencers, Instagram Reels, Meme Marketing, and YouTube Pre-rolls.",
+                budgetAllocation: "75% Top-of-Funnel Content Creators, 15% Retargeting Ads, 10% PR.",
+                metrics: { reach: "4,500,000", ctr: "4.2%", engagement: "12.5%", conversions: "14", sales: "$49,000" },
+                customerComments: [
+                    "The funny videos on TikTok are hilarious! But wait... what does this pod actually do?",
+                    "Looks super cool but is it safe? No clinical details on their website.",
+                    "Hilarious memes, but I'm not spending $3,500 on an electronic bed based on a joke."
+                ],
+                socialMedia: "Highly viral. 3 separate videos crossed 1M views. Comment sections filled with jokes and tags, but zero links clicked to purchase pages.",
+                mistake: "Mismatched Brand Tone and Price Point",
+                clues: [
+                    "Viral comedic reach on channels predominantly used by low-intent younger audiences.",
+                    "High engagement rates combined with an alarmingly low final purchase conversion flow.",
+                    "Total absence of authority builders, clinical security parameters, or trust signals needed for high-ticket luxury item validation."
+                ],
+                explanation: "The agency used low-fidelity meme marketing and fast-paced comedy creators to sell an ultra-premium $3,500 luxury asset. While viral visibility was phenomenal, it targeted a low-purchasing-power demographic and stripped the brand of the premium scientific trust required to convert high-earning professionals.",
+                improvements: [
+                    "Pivot creative strategy toward premium editorial placements, scientific validation, and productivity case studies.",
+                    "Shift budget allocations heavy into LinkedIn Thought Leadership and long-form YouTube architectural/wellness reviews.",
+                    "Introduce zero-interest financing structures and safe trial validation plans directly on the landing system page."
+                ]
+            },
+            {
+                id: 2,
+                companyName: "FreshRoute Meal Prep",
+                industry: "Food & Beverage Tech",
+                campaignObjective: "Drive local weekly subscription signups for organic meal drop deliveries.",
+                targetAudience: "Busy local gym goers, crossfit athletes, and competitive working mothers.",
+                marketingChannels: "Nationwide Podcasting Networks & Universal Google Search Ads.",
+                budgetAllocation: "60% Top National Podcasts, 30% Broad Google Search Keywords, 10% Leaflets.",
+                metrics: { reach: "12,000,000", ctr: "0.8%", engagement: "1.1%", conversions: "112", sales: "$6,720" },
+                customerComments: [
+                    "Heard about this on my favorite true-crime podcast! Sadly, they don't deliver to my state.",
+                    "Clicked your Google ad searching for 'organic food storage containers'—wrong site.",
+                    "Do you guys deliver to Seattle? Your ad showed up but your website says Ohio only."
+                ],
+                socialMedia: "High aggregate mention counts across national listener communities, paired with angry local community complaints regarding service zones.",
+                mistake: "Lack of Geo-Targeting Filtering",
+                clues: [
