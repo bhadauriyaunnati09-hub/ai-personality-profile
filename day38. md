@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Studio - Pro Code Edition</title>
+    <style>
+        :root {
+            --bg-color: #323437;
+            --main-color: #e2b714;
+            --caret-color: #e2b714;
+            --sub-color: #646669;
+            --sub-alt-color: #2c2e31;
+            --text-color: #d1d0c5;
+            --error-color: #ca4754;
+            --error-extra-color: #7e2a33;
+            --font-family: 'Courier New', Courier, monospace;
+        }
+
+        [data-theme="cyberpunk"] {
+            --bg-color: #18191c;
+            --main-color: #00ff99;
+            --caret-color: #00ff99;
+            --sub-color: #ffd300;
+            --text-color: #e0e0e0;
+            --error-color: #ff0055;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto 2rem auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--main-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-config {
+            display: flex;
+            gap: 1rem;
+            background: var(--sub-alt-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .config-btn {
+            background: none;
+            border: none;
+            color: var(--sub-color);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .config-btn.active {
+            color: var(--main-color);
+        }
+
+        #studio-container {
+            max-width: 1000px;
+            width: 100%;
+            margin: auto;
+            position: relative;
+        }
+
+        .stats-ribbon {
+            display: flex;
+            gap: 2rem;
+            font-size: 1.5rem;
+            color: var(--main-color);
+            margin-bottom: 1rem;
+            height: 2rem;
+        }
+
+        #typing-area {
+            position: relative;
+            font-size: 1.5rem;
+            line-height: 2rem;
+            height: 120px;
+            overflow: hidden;
+            word-break: break-all;
+            user-select: none;
+            outline: none;
+        }
+
+        #hidden-input {
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .word {
+            display: inline-block;
+            margin-right: 0.6rem;
+            white-space: nowrap;
+        }
+
+        letter {
+            position: relative;
+            color: var(--sub-color);
+        }
+
+        letter.correct {
+            color: var(--text-color);
+        }
+
+        letter.incorrect {
+            color: var(--error-color);
+            border-bottom: 2px solid var(--error-color);
+        }
+
+        letter.current::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background-color: var(--caret-color);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        #dashboard {
+            display: none;
+            background: var(--sub-alt-color);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .dash-card {
+            background: rgba(0,0,0,0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .dash-card h3 {
+            color: var(--sub-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dash-card p {
+            font-size: 1.8rem;
+            color: var(--main-color);
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: var(--sub-alt-color);
+            color: var(--text-color);
+            border: 1px solid var(--sub-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: var(--main-color);
+            color: var(--bg-color);
+        }
+
+        footer {
+            text-align: center;
+            color: var(--sub-color);
+            font-size: 0.8rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">⌨️ Typing Speed Studio [Code]</div>
+        <div class="nav-config">
+            <button class="config-btn active" onclick="changeLang('javascript')">JavaScript</button>
+            <button class="config-btn" onclick="changeLang('python')">Python</button>
+            <button class="config-btn" onclick="changeLang('html')">HTML/CSS</button>
+            <button class="config-btn" onclick="changeLang('sql')">SQL</button>
+        </div>
+    </header>
+
+    <div id="studio-container">
+        <div class="stats-ribbon">
+            <span id="live-timer">Time: 30s</span>
+            <span id="live-wpm">WPM: 0</span>
+            <span id="live-acc">Acc: 100%</span>
+        </div>
+
+        <div id="typing-area" onclick="focusInput()">
+            <!-- Dynamic letters injected here -->
+        </div>
+        <input type="text" id="hidden-input" autocomplete="off" autocapitalize="off" autofocus>
+
+        <div class="controls">
+            <button class="btn" onclick="resetTest()">Restart (Esc)</button>
+            <button class="btn" onclick="toggleTheme()">Toggle Theme</button>
+        </div>
+
+        <!-- Dashboard Analytics -->
+        <div id="dashboard">
+            <h2 style="color: var(--main-color); margin-bottom: 1.5rem;">🚀 Session Analytics Dashboard</h2>
+            <div class="dash-grid">
+                <div class="dash-card"><h3>Net WPM</h3><p id="dash-wpm">0</p></div>
+                <div class="dash-card"><h3>Accuracy</h3><p id="dash-acc">0%</p></div>
+                <div class="dash-card"><h3>Raw WPM</h3><p id="dash-raw">0</p></div>
+                <div class="dash-card"><h3>Total Errors</h3><p id="dash-errors">0</p></div>
+            </div>
+            <button class="btn" onclick="resetTest()">Try Again</button>
+        </div>
+    </div>
+
+    <footer>
+        Press <kbd style="background:#222; padding:2px 4px; border-radius:3px;">Esc</kbd> to quickly reset the studio workspace.
+    </footer>
+
+    <script>
+        const codeSnippets = {
+            javascript: "function calculateWpm(words, time) { return Math.round(words / (time / 60)); }",
+            python: "def get_performance_metrics(correct, total):\n    return (correct / total) * 100",
+            html: "<div class='studio-container'><section id='dashboard'></section></div>",
+            sql: "SELECT username, MAX(wpm) FROM session_history GROUP BY user_id ORDER BY wpm DESC;"
+        };
+
+        let currentLanguage = 'javascript';
+        let targetText = "";
+        let timer = 30;
+        let timerInterval = null;
+        let testStarted = false;
+        let mistakes = 0;
+        let totalTyped = 0;
+
+        const typingArea = document.getElementById('typing-area');
+        const hiddenInput = document.getElementById('hidden-input');
+        const liveTimer = document.getElementById('live-timer');
+        const liveWpm = document.getElementById('live-wpm');
+        const liveAcc = document.getElementById('live-acc');
+
+        function initTest() {
+            targetText = codeSnippets[currentLanguage];
+            typingArea.innerHTML = '';
+            
+            // Generate letter elements
+            targetText.split('').forEach((char, index) => {
+                const letter = document.createElement('letter');
+                letter.textContent = char;
+                if(index === 0) letter.classList.add('current');
+                typingArea.appendChild(letter);
+            });
+
+            hiddenInput.value = '';
+            timer = 30;
+            testStarted = false;
+            mistakes = 0;
+            totalTyped = 0;
+            clearInterval(timerInterval);
+            liveTimer.textContent = `Time: ${timer}s`;
+            liveWpm.textContent = "WPM: 0";
+            liveAcc.textContent = "Acc: 100%";
+            document.getElementById('dashboard').style.display = "none";
+            typingArea.style.display = "block";
+        }
+
+        function focusInput() {
+            hiddenInput.focus();
+        }
+
+        function changeLang(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('.config-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(lang));
+            });
+            resetTest();
+        }
+
+        hiddenInput.addEventListener('input', () => {
+            if (!testStarted) {
+                testStarted = true;
+                startTimer();
+            }
+
+            const letters = typingArea.querySelectorAll('letter');
+            const inputVal = hiddenInput.value.split('');
+            totalTyped = inputVal.length;
