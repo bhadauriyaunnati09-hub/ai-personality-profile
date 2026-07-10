@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer & Interview Coach (ATS)</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --accent-primary: #3b82f6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+        }
+
+        .main-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--text-main);
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .api-key-group {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px dashed var(--accent-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .api-key-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            margin-top: 0.5rem;
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-primary), #2563eb);
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Results UI Styles */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .score-box {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .dial {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-success) var(--score-percentage, 0%), var(--border-color) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .dial::before {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--bg-dark);
+        }
+
+        .score-text {
+            position: relative;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .report-box {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 400px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        /* Documentation Section */
+        .docs-section {
+            background-color: #1a202c;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .docs-header {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        .docs-content {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            display: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .docs-content h3 {
+            color: var(--text-main);
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .docs-content ul {
+            padding-left: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--accent-primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>AI Resume Analyzer & ATS Coach</h1>
+        <p>Upload your resume details and job description to optimize your profile</p>
+    </header>
+
+    <div class="main-card">
+        <!-- Optional API key for GitHub/Browser deployments as per line 10 instruction -->
+        <div class="api-key-group">
+            <label for="apiKey">Anthropic API Key (Required for live external hosting/browser run):</label>
+            <input type="password" id="apiKey" placeholder="sk-ant-...">
+        </div>
+
+        <div class="form-group">
+            <label for="resumeInput">Paste Your Resume Text:</label>
+            <textarea id="resumeInput" placeholder="Paste your experience, skills, and education here..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="jobInput">Paste Job Description:</label>
+            <textarea id="jobInput" placeholder="Paste the target job description here..."></textarea>
+        </div>
+
+        <button id="analyzeBtn" onclick="runAnalysis()">Analyze Resume</button>
+
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner"></div>
+            <p>Analyzing matching keywords and compiling structured report...</p>
+        </div>
+
+        <!-- Dynamic Purpose-Built Results UI -->
+        <div class="results-section" id="resultsSection">
+            <h2 style="margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Analysis Dashboard</h2>
+            <div class="dashboard">
+                <div class="score-box">
+                    <h3>ATS Match Score</h3>
+                    <div class="dial" id="scoreDial">
+                        <span class="score-text" id="scoreValue">0%</span>
+                    </div>
+                    <p id="verdictText" style="font-weight: 600;"></p>
+                </div>
+                <div class="report-box" id="reportContent">
+                    <!-- Loaded dynamically from Claude API -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collapsible Documentation Panel -->
+    <div class="docs-section">
+        <div class="docs-header" onclick="toggleDocs()">
+            <span>📄 How this application was built</span>
+            <span id="docsArrow">▼</span>
+        </div>
+        <div class="docs-content" id="docsContent">
+            <h3>Brain (System Prompt Design)</h3>
+            <p>The underlying AI operates under a highly specialized role profile acting as an elite Recruiter and Senior Technical Resume Coach. It evaluates input against semantic gaps, structure errors, and toxic industry buzzwords while extracting key metrics dynamically.</p>
+            
