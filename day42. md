@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Financial Command Center (Student Edition)</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #4ade80;
+            --warning: #facc15;
+            --danger: #f87171;
+            --card-border: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 10px;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: var(--accent);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .ai-box {
+            background: rgba(56, 189, 248, 0.05);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        button {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: var(--accent-hover);
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        @media print {
+            body { background: white; color: black; }
+            .card { border: 1px solid #ccc; background: white; color: black; }
+            button { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1>Personal Financial Command Center</h1>
+            <p style="color: var(--text-muted)">Student Strategy & Dashboard</p>
+        </div>
+        <span class="badge">Day 42 Pro Edition</span>
+    </header>
+
+    <div class="grid">
+        <!-- Metric 1: Health Score -->
+        <div class="card">
+            <div class="card-title">Financial Health Score</div>
+            <div class="metric" id="healthScore">72/100</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="healthBar" style="width: 72%; background: var(--success);"></div>
+            </div>
+            <p id="healthStatus" style="margin-top: 10px; font-size: 0.9rem; color: var(--success);">Good Control over expenses</p>
+        </div>
+
+        <!-- Metric 2: Tuition & Education Tracker -->
+        <div class="card">
+            <div class="card-title">Tuition Fee Goal Progress</div>
+            <div class="metric" id="tuitionMetric">$1,200 / $3,000</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="tuitionBar" style="width: 40%; background: var(--warning);"></div>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);" id="tuitionRemaining">Remaining: $1,800</p>
+        </div>
+
+        <!-- Metric 3: Pocket Money Balance -->
+        <div class="card">
+            <div class="card-title">Available Cash Flow</div>
+            <div class="metric" id="cashMetric">$450</div>
+            <p style="color: var(--success); font-size: 0.9rem;">+ Pocket Money & Stipend active</p>
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- Simulation & Controls -->
+        <div class="card">
+            <div class="card-title">What-If Student Simulation</div>
+            <div class="form-group">
+                <label for="simScholarship">Additional Scholarship Amount ($)</label>
+                <input type="number" id="simScholarship" value="0" placeholder="e.g. 500">
+            </div>
+            <div class="form-group">
+                <label for="simExpenseCut">Cut Daily Lifestyle Expenses By (%)</label>
+                <input type="number" id="simExpenseCut" value="0" placeholder="e.g. 20">
+            </div>
+            <button onclick="runSimulation()">Run Financial Simulation</button>
+        </div>
+
+        <!-- AI Insights -->
+        <div class="card">
+            <div class="card-title">AI Recommendation Engine</div>
+            <div class="ai-box">
+                <strong style="color: var(--accent);">Target Action:</strong>
+                <p id="aiRecommendation" style="font-size: 0.95rem; margin-top: 5px;">Your Tuition Fee reserve is under 50%. Allocate 30% of upcoming scholarship payouts directly to the college vault to maintain optimal liquidity.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print/Save Report Section -->
+    <div style="text-align: right; margin-bottom: 30px;">
+        <button onclick="window.print()" style="width: auto; padding: 10px 30px;">🖨️ Export Printable Report</button>
+    </div>
+</div>
+
+<script>
+    function runSimulation() {
+        let scholarship = parseFloat(document.getElementById('simScholarship').value) || 0;
+        let cutPercent = parseFloat(document.getElementById('simExpenseCut').value) || 0;
+
+        let baseHealth = 72;
+        let finalHealth = baseHealth + (scholarship / 100) + (cutPercent * 0.4);
+        if(finalHealth > 100) finalHealth = 100;
+
+        document.getElementById('healthScore').innerText = Math.round(finalHealth) + "/100";
+        document.getElementById('healthBar').style.width = finalHealth + "%";
+
+        if(finalHealth >= 85) {
+            document.getElementById('healthStatus').innerText = "Excellent Financial Security!";
+            document.getElementById('healthStatus').style.color = "var(--success)";
+            document.getElementById('aiRecommendation').innerText = "Strategic Success! Your simulation shows excellent stability. Consider investing extra surpluses in micro-learning tools or student funds.";
+        } else {
+            document.getElementById('aiRecommendation').innerText = "Simulated Update: Increased capital improves safety, but continue focusing on lowering lifestyle costs to fully secure upcoming term fees.";
+        }
+    }
+</script>
+</body>
+</html>
