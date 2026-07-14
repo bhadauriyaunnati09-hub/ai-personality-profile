@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unnati's LinkedIn Profile Accelerator</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent-color: #58a6ff;
+            --text-color: #c9d1d9;
+            --text-bright: #f0f6fc;
+            --danger: #f85149;
+            --success: #3fb950;
+            --border-color: #30363d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        h1 { color: var(--text-bright); margin-bottom: 5px; }
+        h2 { color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-top: 40px; }
+        h3 { color: var(--text-bright); }
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border-color: var(--accent-color);
+        }
+
+        .tab-content {
+            display: none;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .tab-content.active { display: block; }
+
+        .roast-card {
+            border-left: 4px solid var(--danger);
+            background: rgba(248, 81, 73, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .rebuild-box {
+            background: rgba(88, 166, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .score { font-weight: bold; color: var(--danger); }
+        .score-good { font-weight: bold; color: var(--success); }
+
+        .copy-btn {
+            background: var(--border-color);
+            color: var(--text-bright);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+            font-size: 0.85em;
+        }
+
+        .copy-btn:hover { background: var(--accent-color); color: var(--bg-color); }
+
+        .clear { clear: both; }
+
+        .day-card {
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 0;
+        }
+        .day-title { font-weight: bold; color: var(--accent-color); }
+
+        .summary-card {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            border: 2px solid var(--accent-color);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: left;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Unnati Bhadauriya</h1>
+        <p>B.Tech CSE Student | LinkedIn Profile Optimization Hub</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('roast')">PART 1: THE ROAST</button>
+        <button class="tab-btn" onclick="openTab('rebuild')">PART 2: THE REBUILD</button>
+        <button class="tab-btn" onclick="openTab('scorecard')">PART 3: SCORECARD</button>
+        <button class="tab-btn" onclick="openTab('plan')">PART 4: 7-DAY PLAN</button>
+        <button class="tab-btn" onclick="openTab('summary')">PART 5: SHAREABLE SUMMARY</button>
+    </div>
+
+    <!-- PART 1: ROAST -->
+    <div id="roast" class="tab-content active">
+        <h2>Profile Report Card (BEFORE)</h2>
+        <p><em>एक एक्स-रिक्रूटर की क्रूर ईमानदारी: जब कोई आपका खाली प्रोफाइल देखता है तो क्या सोचता है?</em></p>
+        
+        <div class="roast-card">
+            <h3>1. Headline <span class="score">0/10</span></h3>
+            <p><strong>Recruiter's 3-second reaction:</strong> "यह प्रोफाइल एक्टिव भी है या नहीं? गलती से बन गया शायद।"</p>
+            <p>❌ <strong>The specific problem:</strong> प्रोफाइल पर हेडलाइन की जगह कुछ भी नहीं लिखा है।</p>
+            <p>🧠 <strong>Why it hurts:</strong> जब आप किसी को रिक्वेस्ट भेजती हैं या कमेंट करती हैं, तो नाम के नीचे खाली जगह दिखती है। कोई भी रिक्रूटर या कोलाबोरेटर इस पर क्लिक नहीं करेगा।</p>
+            <p>🔍 <strong>The invisible cost:</strong> आप लिंक्डइन सर्च एल्गोरिदम से पूरी तरह गायब हैं। कोई सर्च कर रहा होगा "Python student" तो आपका नाम कभी नहीं आएगा।</p>
+        </div>
+
+        <div class="roast-card">
+            <h3>2. About — First 2 Lines <span class="score">0/10</span></h3>
+            <p><strong>Recruiter's reaction:</strong> "दिखाने के लिए कोई परिचय ही नहीं है।"</p>
+            <p>❌ <strong>The problem:</strong> बिल्कुल खाली।</p>
+            <p>🧠 <strong>Why it hurts:</strong> 'See more' पर क्लिक कराने के लिए शुरुआती दो लाइनें हुक का काम करती हैं, जो आपके पास गायब हैं।</p>
+        </div>
+
+        <div class="roast-card">
+            <h3>3. About — Full Section <span class="score">0/10</span></h3>
+            <p><strong>Recruiter's reaction:</strong> "इस स्टूडेंट का क्या विजन है, यह क्या सीख रही है, कुछ पता नहीं चल रहा।"</p>
+            <p>❌ <strong>The problem:</strong> कोई स्टोरी या बैकग्राउंड मेंशन नहीं है।</p>
+            <p>🧠 <strong>Why it hurts:</strong> कोलाबोरेटर्स को यह नहीं पता चलेगा कि आप किस तरह के प्रोजेक्ट्स में इंटरेस्टेड हैं।</p>
+        </div>
+
+        <div class="roast-card">
+            <h3>4. Experience <span class="score">0/10</span></h3>
+            <p><strong>Recruiter's reaction:</strong> "कोई प्रोजेक्ट या कॉलेज असाइनमेंट भी लिस्टेड नहीं है।"</p>
+            <p>❌ <strong>The problem:</strong> एम्प्टी सेक्शन।</p>
+            <p>🧠 <strong>Why it hurts:</strong> भले ही जॉब एक्सपीरियंस न हो, पर यहाँ ओपन-सोर्स या कॉलेज प्रोजेक्ट्स होने चाहिए थे।</p>
+        </div>
+
+        <div class="roast-card">
+            <h3>5. Skills & Keywords <span class="score">1/10</span></h3>
+            <p><strong>Recruiter's reaction:</strong> "सिर्फ 'Python' लिखा होने से यह नहीं पता चलता कि इसे डेवलपमेंट आता है या बेसिक।"</p>
+            <p>❌ <strong>The problem:</strong> सिर्फ एक अधूरी स्किल का होना।</p>
+            <p>🧠 <strong>Why it hurts:</strong> सर्च फ़िल्टर्स में आप रिजेक्ट हो जाएँगी।</p>
+        </div>
+
+        <div style="background:#21262d; padding:15px; border-radius:6px; font-weight:bold; text-align:center;">
+            OVERALL PROFILE STRENGTH: <span class="score">2/100</span>
+        </div>
+    </div>
+
+    <!-- PART 2: REBUILD -->
+    <div id="rebuild" class="tab-content">
+        <h2>The Rebuild Strategy</h2>
+        <p><em>अब हम आपके प्रोफाइल को जीरो से हीरो लेवल पर रीबिल्ड करेंगे। नीचे दिए गए टेक्स्ट को आप सीधे कॉपी कर सकती हैं।</em></p>
+
+        <h3>1. Headline (3 ऑप्शन्स)</h3>
+        
+        <div class="rebuild-box">
+            <button class="copy-btn" onclick="copyText('h1')">Copy</button>
+            <p><strong>Option 1: Keyword-Optimized (सर्च विजिबिलिटी के लिए बेस्ट)</strong></p>
+            <blockquote id="h1">B.Tech CSE Student | Python Developer | Building Software Solutions & Open Source Projects | Seeking Tech Internships</blockquote>
+            <p><small><em>कब यूज़ करें:</em> जब आपका मुख्य फोकस रिक्रूटर्स की सर्च में आना हो।</small></p>
+        </div>
+
+        <div class="rebuild-box">
+            <button class="copy-btn" onclick="copyText('h2')">Copy</button>
+            <p><strong>Option 2: Value-Proposition Style (कोलाबोरेटर्स को जोड़ने के लिए)</strong></p>
+            <blockquote id="h2">B.Tech CSE @ Unnati | Transforming Logic into Python Code | Open for Project Collaborations & Tech Internships</blockquote>
+            <p><small><em>कब यूज़ करें:</em> जब आप अन्य डेवलपर्स के साथ मिलकर कोडिंग प्रोजेक्ट्स बनाना चाहती हैं।</small></p>
+        </div>
+
+        <div class="rebuild-box">
+            <button class="copy-btn" onclick="copyText('h3')">Copy</button>
+            <p><strong>Option 3: Authority Style (लर्निंग जर्नी दिखाने के लिए)</strong></p>
+            <blockquote id="h3">Computer Science Student | Python Enthusiast | Building in Public & Solving Problems through Code</blockquote>
+            <p><small><em>कब यूज़ करें:</em> जब आप रोज़ाना क्या सीख रही हैं, उसे पोस्ट के ज़रिए शेयर करना चाहें।</small></p>
+        </div>
+
+        <h3>2. About Section (कंप्लीट रीराइट)</h3>
+        <div class="rebuild-box">
+            <button class="copy-btn" onclick="copyText('about-sec')">Copy</button>
+            <div id="about-sec">
+<p>🚀 A Computer Science student who believes that lines of code can solve real-world problems. Currently pursuing my B.Tech in CSE and deeply exploring the ecosystem of Python.</p>
+<p>Every day, I am focused on strengthening my core fundamentals in Data Structures, Algorithms, and Software Logic. I don't just want to memorize syntax—I want to understand how scalable software is architected from scratch.</p>
+<p>💡 What I am looking for:<br>
+• Collaborators: Other developers to build open-source Python tools and web applications with.<br>
+• Mentors & Recruiters: Opportunities like summer internships where I can contribute to real codebases.</p>
