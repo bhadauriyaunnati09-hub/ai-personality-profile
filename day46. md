@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Agent Studio</title>
+    <style>
+        :root {
+            --bg-main: #0B0F19;
+            --bg-card: #151D30;
+            --border-color: #24324F;
+            --text-main: #F3F4F6;
+            --text-muted: #9CA3AF;
+            --primary: #3B82F6;
+            --primary-glow: rgba(59, 130, 246, 0.2);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: var(--font);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 1400px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .studio-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 1024px) {
+            .studio-container {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .config-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            background-color: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Visualization Cycle Map */
+        .visualization-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: linear-gradient(145deg, #151D30, #111827);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cycle-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            position: relative;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .agent-node {
+            background-color: var(--bg-main);
+            border: 2px solid var(--border-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 130px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .agent-node.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            transform: scale(1.05);
+        }
+
+        .agent-node.success {
+            border-color: var(--success);
+        }
+
+        /* Simplified visual connecting line using pure CSS layout links */
+        .cycle-flow-indicator {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            user-select: none;
+        }
+
+        .loop-return-text {
+            font-size: 0.75rem;
+            color: var(--primary);
+            border: 1px dashed var(--primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        /* Monitor Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 5px;
+        }
+
+        /* Terminal Style Live Outputs */
+        .terminal {
+            background-color: #05070B;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            max-height: 350px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .log-entry {
+            border-left: 3px solid var(--border-color);
+            padding-left: 8px;
+        }
+
+        .log-entry.info { border-color: var(--primary); color: #93C5FD; }
+        .log-entry.success { border-color: var(--success); color: #6EE7B7; }
+        .log-entry.warning { border-color: var(--warning); color: #FCD34D; }
+        .log-entry.error { border-color: var(--danger); color: #FCA5A5; }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px 12px;
+            font-weight: 600;
+            border-radius: 4px;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .json-block {
+            background-color: #05070B;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 0.85rem;
+            color: #A7F3D0;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>Autonomous Agent Studio</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Orchestrate live multi-agent recursive improvement loops</p>
+        </div>
+        <div style="font-size: 0.85rem; background: #1E293B; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border-color);">
+            🔴 Production-Ready Loop Engine
+        </div>
+    </header>
+
+    <div class="studio-container">
+        <!-- Control Panel -->
+        <div class="card config-panel">
+            <h3 style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">Studio Controller</h3>
+            
+            <div class="form-group">
+                <label for="apiKey">Anthropic API Key</label>
+                <input type="password" id="apiKey" placeholder="sk-ant-...">
+                <p style="font-size: 0.75rem; color: var(--text-muted);">Stored safely in memory. Required for direct execution.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="taskInput">Initial Goal/Objective</label>
+                <textarea id="taskInput" rows="4" placeholder="Enter what you want the autonomous team to build/optimize..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="targetScore">Target Success Threshold</label>
+                <input type="number" id="targetScore" value="90" min="1" max="100">
+            </div>
+
+            <div class="form-group">
+                <label for="maxIterations">Hard Loop Fallback Cap</label>
+                <input type="number" id="maxIterations" value="5" min="1" max="20">
+            </div>
+
+            <button id="startBtn" class="btn" onclick="runStudioEngine()">Launch Agent Orchestration</button>
+            <button id="stopBtn" class="btn" style="background-color: var(--danger);" onclick="stopStudioEngine()" disabled>Force Abort</button>
+        </div>
+
+        <!-- Dashboard Panel -->
+        <div class="dashboard">
+            <!-- Loop Visualization Map -->
+            <div class="card visualization-box">
+                <h4 style="align-self: flex-start; margin-bottom: 15px;">Live Architecture Loop Routing</h4>
