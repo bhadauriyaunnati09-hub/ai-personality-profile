@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare & Decide: EV Showdown (Model 3 vs BYD Seal)</title>
+    <style>
+        :root {
+            --bg-main: #0B0F19;
+            --bg-card: #161D30;
+            --bg-accent: #1E2942;
+            --text-main: #F3F4F6;
+            --text-muted: #9CA3AF;
+            --primary: #3B82F6;
+            --primary-hover: #2563EB;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --border: #2D3748;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #60A5FA, #34D399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid-layout {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.75rem;
+        }
+
+        .weight-control {
+            margin-bottom: 1.25rem;
+        }
+
+        .weight-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .weight-slider {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-accent);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .weight-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .weight-slider::-webkit-slider-thumb:hover {
+            background: var(--primary-hover);
+        }
+
+        .rankings-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .car-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .car-card:hover {
+            border-color: var(--primary);
+        }
+
+        .car-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .car-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .rank-badge {
+            background-color: var(--primary);
+            color: #fff;
+            font-weight: 800;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .car-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .score-display {
+            text-align: right;
+        }
+
+        .score-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--success);
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            background-color: var(--bg-main);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .flag-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            margin-top: 0.25rem;
+        }
+
+        .flag-synthetic {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .flag-sourced {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .collapsible-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+
+        .collapsible-trigger {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            padding: 1.25rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .collapsible-trigger:hover {
+            background-color: var(--bg-accent);
+        }
+
+        .collapsible-content {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: none;
+        }
+
+        .collapsible-content.active {
+            display: block;
+        }
+
+        .research-item {
+            margin-top: 1.25rem;
+        }
+
+        .research-item h4 {
+            font-size: 1rem;
+            color: #60A5FA;
+            margin-bottom: 0.5rem;
+        }
+
+        .sources-list {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .sources-list li {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .sources-list li::before {
+            content: "•";
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+        }
+
+        .sources-list a {
+            color: #60A5FA;
+            text-decoration: none;
+        }
+
+        .sources-list a:hover {
+            text-decoration: underline;
+        }
+
+        .loading-state {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>EV Showdown: Compare & Decide</h1>
+            <p>Tailored for family priority & long road trips. Adjust weights to update real-time performance rankings.</p>
+        </header>
+
+        <div class="grid-layout">
+            <!-- Sidebar Criteria Adjuster -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>⚡ Priority Weights</span>
+                </div>
+                
+                <div class="weight-control">
+                    <div class="weight-label">
+                        <span>Price & Value Value</span>
+                        <span id="val-price">50%</span>
+                    </div>
+                    <input type="range" id="weight-price" class="weight-slider" min="0" max="100" value="50">
+                </div>
+
+                <div class="weight-control">
+                    <div class="weight-label">
+                        <span>Safety Rating</span>
+                        <span id="val-safety">50%</span>
+                    </div>
+                    <input type="range" id="weight-safety" class="weight-slider" min="0" max="100" value="50">
+                </div>
+
+                <div class="weight-control">
+                    <div class="weight-label">
+                        <span>Real-world Highway Range</span>
+                        <span id="val-range">50%</span>
+                    </div>
+                    <input type="range" id="weight-range" class="weight-slider" min="0" max="100" value="50">
+                </div>
+
+                <div class="weight-control">
+                    <div class="weight-label">
+                        <span>Charging Speed</span>
