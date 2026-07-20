@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defend Your Experience - Dashboard</title>
+    <script src="https://jsdelivr.net"></script>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0B0F19;
+            --bg-card: #151D30;
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --accent-success: #10B981;
+            --accent-warning: #F59E0B;
+            --accent-danger: #EF4444;
+            --text-main: #F3F4F6;
+            --text-muted: #9CA3AF;
+            --border: #24324F;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366F1, #A855F7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge {
+            background: rgba(79, 70, 229, 0.2);
+            color: var(--primary-light);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(79, 70, 229, 0.3);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* --- Mock Interview Simulator --- */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 450px;
+            max-height: 600px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            max-width: 85%;
+            line-height: 1.5;
+        }
+
+        .message.system {
+            background-color: rgba(36, 50, 79, 0.4);
+            border-left: 4px solid var(--primary);
+            align-self: flex-start;
+        }
+
+        .message.user {
+            background-color: var(--primary);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #4338CA;
+        }
+
+        /* --- Analytics Dashboard --- */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-val {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+
+        .val-good { color: var(--accent-success); }
+        .val-warn { color: var(--accent-warning); }
+
+        .chart-box {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+        }
+
+        .claims-list {
+            margin-top: 1rem;
+            list-style: none;
+        }
+
+        .claim-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .claim-status {
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .status-verified { background: rgba(16, 185, 129, 0.15); color: var(--accent-success); }
+        .status-weak { background: rgba(239, 68, 68, 0.15); color: var(--accent-danger); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Defend Your Experience</div>
+        <div class="badge">Day 50 Challenge Accomplished</div>
+    </header>
+
+    <main>
+        <!-- Left Panel: Adaptive Simulator -->
+        <section class="panel">
+            <div class="panel-title">🛡️ Smart Skeptic Interview Simulator</div>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatBox">
+                    <div class="message system">
+                        <strong>System AI:</strong> Welcome! I have scanned your submitted profile/resume. I will now act as a skeptical interviewer to stress-test your claims. Let's begin.
+                    </div>
+                    <div class="message system">
+                        <strong>Question 1:</strong> You claimed ownership over the end-to-end frontend architecture in your portfolio project. Can you specifically defend why you chose a monolithic structure over micro-frontends for scalability?
+                    </div>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="Type your defense answer here..." onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()">Submit Answer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Panel: Dynamic Metrics & Insights -->
+        <section class="panel">
+            <div class="panel-title">📊 Live Experience Defense Report</div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Overall Defense Score</div>
+                    <div class="metric-val val-good" id="scoreVal">74%</div>
+                </div>
+                <div class="metric-card">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Skepticism Challenge Level</div>
+                    <div class="metric-val val-warn">High</div>
+                </div>
+            </div>
+
+            <div class="chart-box">
+                <canvas id="defenseChart" style="max-height: 230px;"></canvas>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem;">Extracted Resume Claims Status</div>
+                <ul class="claims-list">
+                    <li class="claim-item">
+                        <span>Optimized API response time by 40%</span>
+                        <span class="claim-status status-verified">Well Defended</span>
+                    </li>
+                    <li class="claim-item">
+                        <span>Led a team of 4 junior developers</span>
+                        <span class="claim-status status-verified">Verified</span>
+                    </li>
+                    <li class="claim-item">
+                        <span>Designed scalable architecture patterns</span>
+                        <span class="claim-status status-weak" id="weakClaimStatus">Under Challenge</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Init ChartJS
+        const ctx = document.getElementById('defenseChart').getContext('2d');
+        let defenseChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
