@@ -1,0 +1,96 @@
+# 🗺️ Deliverable 4: System Architecture & Design (Day 52)
+
+This document establishes the official technical foundation, data design, and architecture for **SmartStudy AI** based on the PRD created on Day 51.
+
+---
+
+## 1. Technical Stack Justification
+
+| Component | Technology | Selection Justification |
+| :--- | :--- | :--- |
+| **Frontend & UI** | **Streamlit** | Eliminates JavaScript/HTML overhead, enables rapid Python-only rendering, and fits the strict 10-day deployment constraint perfectly. |
+| **Backend Logic** | **Python 3.10+** | Provides seamless native integration with Streamlit frameworks and the standard Anthropic API wrapper. |
+| **Database Engine** | **SQLite (Local Storage)** | Zero configuration needed, runs serverless out of a single local file, and provides structured storage for historical analytics. |
+| **Authentication** | **Session State (Local)** | Bypasses complex OAuth implementations for v1.0. User states persist dynamically during the execution session. |
+| **AI Processing** | **Claude 3.5 Sonnet API** | Superior capabilities in JSON formatting, textual summarization, complex contextual logical reasoning, and structured educational output. |
+| **Public Hosting** | **Streamlit Cloud** | Direct structural synchronization with our public GitHub repository, providing instantaneous hot-reloads on git pushes. |
+
+---
+
+## 2. Mermaid System Architecture Diagram
+
+```mermaid
+graph TD
+    %% User Interaction Layer
+    A[User Interface / Streamlit Web App] -->|1. Paste Study Text| B[Core App Routing Engine]
+    A -->|2. Answer Practice Quiz| B
+    A -->|3. View Metrics Dashboard| B
+
+    %% Processing Logic & State Management
+    B -->|Check Memory Cache| C[Streamlit Session State Storage]
+    B -->|Trigger API Payload Request| D[utils/ai_helper.py Engine]
+    
+    %% External Integration Layer
+    D -->|HTTPS REST Request| E[Anthropic Claude API Server]
+    E -->|Structured JSON Output Response| D
+    
+    %% Persistent Storage
+    D -->|Parse Context Elements| B
+    B -->|Commit Score Logs & Metrics| F[(SQLite Database File: data.db)]
+    F -->|Fetch Analytic Trends Data| B
+    B -->|Render Dynamically| A
+```
+
+---
+
+## 3. Database Schema Design (SQLite Engine)
+
+To support the analytics dashboard and save flashcard status without managing complex cloud databases, we will implement the following structured tables:
+
+### 📋 Table 1: `quiz_history`
+Manages performance logging for user test metrics over time.
+
+*   `id` (INTEGER, Primary Key, Auto-Increment)
+*   `topic_name` (TEXT, Not Null) — Extracted target header or manual title.
+*   `total_questions` (INTEGER, Not Null) — Default value set to 5.
+*   `score_achieved` (INTEGER, Not Null) — Number of accurate user responses.
+*   `completion_timestamp` (DATETIME, Default CURRENT_TIMESTAMP)
+
+### 📋 Table 2: `saved_flashcards`
+Manages localized retention items generated via the AI helper.
+
+*   `id` (INTEGER, Primary Key, Auto-Increment)
+*   `term_front` (TEXT, Not Null) — Concept title, vocabulary item, or core question.
+*   `definition_back` (TEXT, Not Null) — Expanded logic description or verified definition.
+*   `is_mastered` (INTEGER, Default 0) — Flag toggled between 0 (Learning) and 1 (Mastered).
+
+---
+
+## 4. Repository Initial File Directory Setup
+
+This is the standard structural layout we will implement in our workspace to separate business logic, application views, and databases cleanly:
+
+```text
+SmartStudy-AI/
+│
+├── .streamlit/
+│   └── config.toml          # Custom theme parameters and interface styling
+│
+├── components/
+│   ├── dashboard.py         # Home view and user visual analytics chart layer
+│   ├── quiz_view.py         # Dynamic multi-choice processing engine
+│   ├── flashcards.py        # Card generation container with flip states
+│   └── scheduler.py         # Structured calendar grid array rendering
+│
+├── utils/
+│   ├── ai_helper.py         # Anthropic network payload execution scripts
+│   └── db_helper.py         # SQLite CRUD transaction connections wrapper
+│
+├── data/
+│   └── data.db              # Local persistence flat file (Auto-generated)
+│
+├── .gitignore               # Enforces security exclusions (.env, system file blocks)
+├── app.py                   # Global routing anchor and initialization layout
+├── requirements.txt         # Explicit system module deployment requirements
+└── README.md                # System documentation center
+```
