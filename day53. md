@@ -1,0 +1,72 @@
+# 📂 Deliverable 5: Project Setup & Foundation Documentation (Day 53)
+
+This section acts as the official setup documentation, environment control center, and milestone summary for Day 53.
+
+---
+
+## 📄 1. SETUP.md (Installation & Execution Guide)
+
+### Prerequisites
+Before launching the application, ensure you have Python 3.10 or higher installed on your local computer.
+
+### Step-by-Step Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com
+   cd SmartStudy-AI
+   ```
+
+2. **Initialize Virtual Environment (Recommended)**
+   ```bash
+   python -m venv venv
+   # On Windows:
+   .\venv\Scripts\activate
+   # On Mac/Linux:
+   source venv/bin/activate
+   ```
+
+3. **Install Project Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Launch the Local Development Server**
+   ```bash
+   streamlit run app.py
+   ```
+   *The application will automatically boot up in your default web browser at `http://localhost:8501`.*
+
+---
+
+## 🔐 2. ENVIRONMENT.md (Tools & App Configuration)
+
+### Required Development Dependencies
+All system modules must match the explicit versions below to avoid deployment compilation errors:
+*   `streamlit==1.32.0` — Core reactive interface engine.
+*   `anthropic==0.18.0` — Official Claude API software development kit.
+*   `pandas==2.2.0` — Handles structured data tables.
+*   `plotly==5.19.0` — Controls interactive dashboard data visualizations.
+
+### Secure Key Configuration
+To connect the Claude reasoning engine securely, create a file named `.env` in the root folder (never commit this file to public GitHub repositories):
+```text
+ANTHROPIC_API_KEY=your_secret_claude_api_key_here
+```
+
+---
+
+## 📝 3. DAY3-SUMMARY.md (Milestone Review)
+
+### ✅ What Was Completed Today
+*   **Global Layout Engine:** Implemented the custom sidebar layout router inside `app.py`.
+*   **State Containers:** Initialized core `st.session_state` parameters to maintain active page caching without needing backend database setups.
+*   **Theme Initialization:** Configured custom styles, text colors, and font definitions inside `.streamlit/config.toml`.
+*   **Branch Architecture:** Organized repository management rules with a strict development workflow strategy.
+
+### 🚧 What's Ready to Build Tomorrow
+*   The system structure is fully active and listening for content routing. 
+*   Tomorrow, the application skeleton will be integrated with the functional AI prompt parsing logic.
+
+### 🎯 Tomorrow's Objective (Day 54)
+*   **Objective:** To fully implement the **AI Quiz & Summary Generator** module. Users will be able to paste notes, click generate, and instantly process deep-dive summaries and structured multiple-choice question sets.
